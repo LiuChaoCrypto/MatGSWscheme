@@ -12,7 +12,8 @@
 #include"TestSecurity60.h"
 
 using namespace std;
-
+// Since the bootstrapping key is a set of MatGSW encryption ciphertext of secret information 2^js_i, it is a huge memory consumption. So here we iteratively calling BootKeyGenOne algorithm, which is used to generate one bootstrapping key for some seceret key 2^js_i. This way the memory consumption is only one MatGSW ciphertext. 
+// SO the tesing algorithm is iteratively generate secret key information and use it to homomorphically multiplicate acc VecLWE ciphertext.
 void TestBootstrap_uint16(){
 	cout << "This is for testing the correctness of bootstrapping with a toy params;" << endl;
 	int intputm = 1;
