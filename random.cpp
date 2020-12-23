@@ -3,7 +3,7 @@
 
 //#include "aes/aes.h"
 //#include"header.h"
-
+// The discrete Gaussian sampling is from https://eprint.iacr.org/2019/1213
 unsigned char AES_KEY_new[32];
 unsigned char AES_SCH_new[240];
 
