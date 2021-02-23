@@ -11,8 +11,10 @@
 #include"VecLWE.h"
 #include"VecLWEcore.h"
 #include"hash.h"
+#include<math.h>
 using namespace std;
 
+enum Boolean { OR,XOR, AND,NAND,NOR,XNOR };
 
 class BootstrapScheme_uint16 {
 public:
@@ -54,6 +56,9 @@ public:
 
 uint32_t roundingfunc(uint32_t input, uint32_t q, uint32_t t, uint32_t Q);
 
+uint32_t BooleanGate(uint32_t input, uint32_t q, uint32_t t, uint32_t Q, Boolean BL);
+
+
 //----------------------------uint32
 
 
@@ -87,6 +92,11 @@ public:
 		const uint32_t b
 	)const;
 
+	std::shared_ptr<VecLWECiphertext_uint32> InitializeBool(
+		const std::shared_ptr<VecLWEparams_uint32> Vecparams,
+		const uint32_t b,
+		Boolean BL
+	)const;
 
 
 	std::shared_ptr<LWECiphertext_uint32> Bootstrapping(
@@ -97,6 +107,14 @@ public:
 		const std::shared_ptr<LWESecretKey_uint32> InputLWESecret
 	)const;
 
+	std::shared_ptr<LWECiphertext_uint32> BootstrappingBool(
+		const std::shared_ptr<MatGSWparams_uint32> Matparams,
+		const std::shared_ptr<VecLWEparams_uint32> Vecparams,
+		const std::shared_ptr<LWECiphertext_uint32> InputLWEcipher,
+		const std::shared_ptr<MatGSWSecretKey_uint32> MatSecret,
+		const std::shared_ptr<LWESecretKey_uint32> InputLWESecret,
+		Boolean BL
+	)const;
 
 
 };

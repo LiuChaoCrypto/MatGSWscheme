@@ -12,8 +12,7 @@
 #include"TestSecurity60.h"
 
 using namespace std;
-// Since the bootstrapping key is a set of MatGSW encryption ciphertext of secret information 2^js_i, it is a huge memory consumption. So here we iteratively calling BootKeyGenOne algorithm, which is used to generate one bootstrapping key for some seceret key 2^js_i. This way the memory consumption is only one MatGSW ciphertext. 
-// SO the tesing algorithm is iteratively generate secret key information and use it to homomorphically multiplicate acc VecLWE ciphertext.
+
 void TestBootstrap_uint16(){
 	cout << "This is for testing the correctness of bootstrapping with a toy params;" << endl;
 	int intputm = 1;
@@ -110,7 +109,7 @@ void TestBootstrap_uint16(){
 
 
 void TestBootstrap_uint32() {
-	cout << "This is for testing the correctness of bootstrapping for uint32 with a toy params;" << endl;
+	cout << "This is for testing the correctness of bootstrapping;" << endl;
 	int intputm = 1;
 	
 	TimeVar t;
@@ -194,4 +193,167 @@ void TestBootstrap_uint32() {
 
 	if (lweplainresult->Getm() == intputm)cout << "Success!" << endl;
 	else { cout << "Fail!" << endl; }
+};
+
+
+void TestBootstrapBool_uint32() {
+	cout << "This is for testing the correctness of bootstrapping to evaluate Boolean Gates;" << endl;
+	int intputm1;
+
+	int intputm2;
+
+	cout << "Please input two bit, after enter one bit, press Enter to enter next one. Input must be 0 or 1:";
+	cin>>intputm1;
+	cin >> intputm2;
+	if ((intputm1 != 0) && (intputm1 != 1))
+	{
+		cout << "Wrong inputs! Please input 0 or 1"; return;
+	}
+	if ((intputm2 != 0) && (intputm2 != 1))
+	{
+		cout << "Wrong inputs! Please input 0 or 1"; return;
+	}
+
+	cout << "\n Input two bit is " << intputm1 << " and " << intputm2;
+
+	cout << "\n Please input Boolea Gates, input one of number in {1,2,3,4,5,6}, for every number, it corresponding to {OR,NOR,AND,NAND,XOR,XNOR} gate, respectly:";
+	
+	int bl;
+	Boolean BL;
+	cin >> bl;
+	switch (bl)
+	{
+	case 1:BL = OR;
+        cout<<"Input Boolean Gate is OR";
+		break;
+	case 2:BL = NOR;
+        cout<<"Input Boolean Gate is NOR";
+		break;
+	case 3:BL = AND;
+        cout<<"Input Boolean Gate is AND";
+		break;
+	case 4:BL = NAND;
+        cout<<"Input Boolean Gate is NAND";
+		break;
+	case 5:BL = XOR;
+        cout<<"Input Boolean Gate is XOR";
+		break;
+	case 6:BL = XNOR;
+        cout<<"Input Boolean Gate is XNOR";
+		break;
+	default: cout << "Wrong input!";
+		return;
+		break;
+	}
+	TimeVar t;
+	double processingTime(0.0);
+
+	//	TestSecurity60();
+
+
+	uint64_t params_Q = pow(2, 32);
+	uint32_t params_N = 10, params_q = 60, params_t = 4, params_n = 10;
+
+	float params_sigma = 2.12;
+	cout << "\nParams is (Q,N,sigma,q,n)=(" << params_Q << "," << params_N << "," << params_sigma << "," << params_q << "," << params_n << ")" << endl;
+	cout << "Input message space parameter " << params_t << endl;
+
+
+	cout << "Beginning bootstrapping." << endl;
+	MatGSWparams_uint32 MatGSWpar1(params_N, params_Q, params_sigma, params_q, params_n);
+
+	MatGSWEncryptionScheme_uint32 scheme;
+
+	auto matgswparams = make_shared<MatGSWparams_uint32>(MatGSWpar1);
+
+
+	auto matsec = scheme.KeyGen(matgswparams);
+
+
+
+
+	VecLWEparams_uint32 VecLWEpar1(params_N, params_Q, params_sigma, params_q, params_t);
+	auto veclwepar = make_shared<VecLWEparams_uint32>(VecLWEpar1);
+	VecLWEEncryptionScheme_uint32 VecLWEscheme;
+
+
+	LWEparams_uint32 Lwepar1(params_n, params_q, params_sigma, params_t);
+
+
+	auto lwepar = make_shared<LWEparams_uint32>(Lwepar1);
+	LWEEncryptionScheme_uint32 LWEscheme;
+	auto lwesec = LWEscheme.KeyGen(lwepar);
+	//	cout << "\nlwesec=" << lwesec->Gets();
+
+	uint32_t lwemessage_1 = intputm1;
+
+	LWEPlaintext_uint32 lwepltext_1;
+	lwepltext_1.Setm(lwemessage_1);
+
+	shared_ptr<LWEPlaintext_uint32>  lweplptr_1 = make_shared<LWEPlaintext_uint32>(lwepltext_1);
+
+
+	auto lwecipher_1 = LWEscheme.Encrypt(lwepar, lwesec, lweplptr_1);
+	uint32_t lwemessage_2 = intputm2;
+
+	LWEPlaintext_uint32 lwepltext_2;
+	lwepltext_2.Setm(lwemessage_2);
+
+	shared_ptr<LWEPlaintext_uint32>  lweplptr_2 = make_shared<LWEPlaintext_uint32>(lwepltext_2);
+
+
+	auto lwecipher_2 = LWEscheme.Encrypt(lwepar, lwesec, lweplptr_2);
+
+	auto lwecipher = LWEscheme.LWEadd(lwepar, lwecipher_1, lwecipher_2);
+
+	LWEPlaintext_uint32* lwemresult = new LWEPlaintext_uint32();;
+    LWEscheme.Decrypt(lwepar, lwesec, lwecipher, lwemresult);
+
+	if (lwemresult->Getm() != (intputm1 + intputm2)) { cout << "Error is too big, try agin!"; return; }// if m1+m2 is not correct, it means that the error is too big so that decryption failure.
+
+	
+	LWEPlaintext_uint32* lweplainresult = new LWEPlaintext_uint32();
+
+
+
+
+	BootstrapScheme_uint32 bootscheme;
+
+	auto MatGswOnceKeyGen = bootscheme.BootKeyGenOne(matgswparams, matsec, 0);
+
+	auto RetuLWEcipher = bootscheme.BootstrappingBool(matgswparams, veclwepar, lwecipher, matsec, lwesec,BL);
+	LWEparams_uint32 Lwepar2(params_N, params_Q, params_sigma, params_t);
+
+
+
+	auto lwepar2 = make_shared<LWEparams_uint32>(Lwepar2);
+
+	LWESecretKey_uint32 lwesec2;
+	lwesec2.Sets((matsec->GetS())[0]);
+	auto lwesec3 = make_shared<LWESecretKey_uint32>(lwesec2);
+
+
+
+
+
+	LWEscheme.Decrypt(lwepar2, lwesec3, RetuLWEcipher, lweplainresult);
+	//cout << "\n Final LWE cipher is an encryption of m=" << lweplainresult->Getm() << endl;
+
+	cout << "\n " << intputm1;
+	switch (bl)
+	{
+	case 1:cout<<" OR ";
+		break;
+	case 2:cout << " NOR ";
+		break;
+	case 3:cout << " AND ";
+		break;
+	case 4:cout << " NAND ";
+		break;
+	case 5:cout << " XOR ";
+		break;
+	case 6:cout << " XNOR ";
+		break;
+	};
+	cout<< intputm2 << "="<<lweplainresult->Getm();
 };

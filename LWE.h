@@ -7,17 +7,18 @@
 
 #include"LWEcore.h"
 
+
 class LWEEncryptionScheme_uint16 {
 public:
 	LWEEncryptionScheme_uint16() {}
 
 
-    std::shared_ptr<LWESecretKey_uint16> KeyGen(
+	std::shared_ptr<LWESecretKey_uint16> KeyGen(
 		const std::shared_ptr<LWEparams_uint16> params) const;
 
 
 
-    std::shared_ptr<LWECiphertext_uint16> Encrypt(
+	std::shared_ptr<LWECiphertext_uint16> Encrypt(
 		const std::shared_ptr<LWEparams_uint16> params,
 		const std::shared_ptr<const LWESecretKey_uint16> sk,
 		const std::shared_ptr<const LWEPlaintext_uint16> m) const;
@@ -59,6 +60,12 @@ public:
 		const std::shared_ptr<const LWESecretKey_uint32> sk,
 		const std::shared_ptr<const LWECiphertext_uint32> ct,
 		LWEPlaintext_uint32* result) const;
+	std::shared_ptr<LWECiphertext_uint32> LWEadd(
+		const std::shared_ptr<LWEparams_uint32> params,
+		const std::shared_ptr<const LWECiphertext_uint32> cipher1,
+		const std::shared_ptr<const LWECiphertext_uint32> cipehr2
+	)const;
+
 
 
 };
