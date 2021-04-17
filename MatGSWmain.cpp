@@ -16,12 +16,13 @@
 using namespace std;
 
 int main() {
-    //Testing the correctness of the bootstrapping procedure.
-	TestBootstrap_uint32();
-	TestBootstrapBool_uint32();
-    //Computeing the time complexity of HAOscheme and MatGSWscheme.
-    //The first input (MatGSWscheme/HAOscheme) is to make clear the type of the scheme. The second input (128/192/256) is to make clear the params. 
-//	TestSecurity_uint32(MatGSWscheme,256);
-	return 0;
+    
+	TestBootstrap_uint32();//Testing the correctness of the bootstrapping procedure.
+	TestBootstrapBool_uint32();//Testing the correctness of the procedure for Boolean gates.
+
+	// TestSecurity_uint32(MatGSWscheme,256);//Computeing the running time of MatGSWscheme and HAOscheme (by Hiromasa, Abe and Okamoto). The first input is set to be MatGSWscheme or HAOscheme, and the second input is set to be 128/192/256, which is to make clear the parameters security.
+	
+	 //TestSecurity_uint32(HAOscheme, 256);
+	 return 0;
 
 };

@@ -2,9 +2,6 @@
 #ifndef VECLWECORE_H
 #define VECLWECORE_H
 
-
-
-
 #include <string>
 #include <vector>
 #include<stdint.h>
@@ -42,9 +39,6 @@ private:
 	uint32_t m_delta;// Q/t
 };
 
-
-
-
 class VecLWECiphertext_uint16 {
 public:
 	VecLWECiphertext_uint16() {}
@@ -54,14 +48,11 @@ public:
 
 	const vector<uint16_t>& Getb() const { return vec_b; }
 
-
-
 	void Seta(const vector<uint16_t>& a) { vec_a = a; }
 	void Setb(const vector<uint16_t>& b) { vec_b = b; }
 private:
 	vector<uint16_t> vec_a;
 	vector<uint16_t> vec_b;
-
 };
 
 class VecLWESecretKey_uint16 {
@@ -70,20 +61,16 @@ public:
 
 	explicit VecLWESecretKey_uint16(const vector<vector<uint16_t>>& s) : mat_S(s) {}
 
-
 	const VecLWESecretKey_uint16& operator=(const VecLWESecretKey_uint16& rhs) {
 		this->mat_S = rhs.mat_S;
 		return *this;
 	}
 
-
 	const vector<vector<uint16_t>>& GetS() const { return mat_S; }
-
 
 	void SetS(const vector<vector<uint16_t>>& b) { mat_S = b; }
 private:
 	vector<vector<uint16_t>> mat_S;
-
 };
 
 class VecLWEPlaintext_uint16 {
@@ -94,11 +81,9 @@ public:
 
 	const vector<uint16_t>& Getm() const { return vec_m; }
 
-
 	void SetM(const vector<uint16_t>& b) { vec_m = b; }
 private:
 	vector<uint16_t> vec_m;
-
 };
 
 //----------------------------------------uint32-----------------------------
@@ -133,9 +118,6 @@ private:
 	uint32_t m_delta;// Q/t
 };
 
-
-
-
 class VecLWECiphertext_uint32 {
 public:
 	VecLWECiphertext_uint32() {}
@@ -145,14 +127,11 @@ public:
 
 	const vector<uint32_t>& Getb() const { return vec_b; }
 
-
-
 	void Seta(const vector<uint32_t>& a) { vec_a = a; }
 	void Setb(const vector<uint32_t>& b) { vec_b = b; }
 private:
 	vector<uint32_t> vec_a;
 	vector<uint32_t> vec_b;
-
 };
 
 class VecLWESecretKey_uint32 {
@@ -161,20 +140,16 @@ public:
 
 	explicit VecLWESecretKey_uint32(const vector<vector<uint32_t>>& s) : mat_S(s) {}
 
-
 	const VecLWESecretKey_uint32& operator=(const VecLWESecretKey_uint32& rhs) {
 		this->mat_S = rhs.mat_S;
 		return *this;
 	}
 
-
 	const vector<vector<uint32_t>>& GetS() const { return mat_S; }
-
 
 	void SetS(const vector<vector<uint32_t>>& b) { mat_S = b; }
 private:
 	vector<vector<uint32_t>> mat_S;
-
 };
 
 class VecLWEPlaintext_uint32 {
@@ -185,13 +160,8 @@ public:
 
 	const vector<uint32_t>& Getm() const { return vec_m; }
 
-
 	void SetM(const vector<uint32_t>& b) { vec_m = b; }
 private:
 	vector<uint32_t> vec_m;
-
 };
-
-
-
 #endif // !VECLWECORE_H

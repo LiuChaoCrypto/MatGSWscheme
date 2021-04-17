@@ -12,22 +12,14 @@ short Sample_Table2_new[27] = { 0,-1,1, -1,-2,0, 1,0,2, -1,-2,0 ,-2,-3,-1 ,0,-1,
 
 short sampler_New(int a, int b, unsigned char* output, RNG_New* RNG) {//采样 a个ZO+b个均匀
 
-	
-	
-
-
-
 	//int bytes_need_1 = 2;//ceil(2 * a / 8.0);
 	//int bytes_need_2 = 1;//ceil(log(pow(3.0, b * 1.0)) / log(2.0) / 8.0);
 
 	//int byts_need = bytes_need_2 + bytes_need_1;
 
-
 	memset(output, 0, (3) * sizeof(unsigned char));
 
 	(*RNG).call_bytes(output, 3);
 
-
 	return Sample_Table1_new[(((unsigned short int*)output)[0] & 0x3ff)] + Sample_Table2_new[(((unsigned short int*)(output + 1))[0] >> 8) % 27];
-
 }

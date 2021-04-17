@@ -38,22 +38,15 @@ struct RNG_New {
 	}
 
 	void call_bytes(unsigned char* re, int number) {
-
 		if (number > outlen)
 			this->reset();
-
 		memcpy(re, output1 + outlen - number, number);
 		outlen -= number;
 	}
-
 };
-
-
-
-
 extern short Sample_Table1_new[1024];
 extern short Sample_Table2_new[27]; 
 
 short sampler_New(int a, int b, unsigned char* output, RNG_New* RNG); 
-
+//For the Gauss sampling technique used here, refer to https://eprint.iacr.org/2019/1231.pdf 
 #endif // !RANDOM_H

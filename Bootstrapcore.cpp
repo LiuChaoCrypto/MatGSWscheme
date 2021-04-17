@@ -1,44 +1,31 @@
-
-
 #include"Bootstrapcore.h"
-
-
 using namespace std;
-
-
 
 std::shared_ptr<MatGSWCiphertext_uint16> BootstrapScheme_uint16::BootKeyGenOne(
 	const std::shared_ptr<MatGSWparams_uint16> params,
 	const std::shared_ptr<MatGSWSecretKey_uint16> secret,
-	const uint16_t m) const {
-	
+	const uint16_t m) const {	
 	MatGSWEncryptionScheme_uint16 scheme;
 	auto plain =scheme.SetPerM(params, m);
 	auto cipher = scheme.Encrypt(params, secret, plain);
 	return cipher;
 };
 
-
 std::shared_ptr<VecLWECiphertext_uint16> BootstrapScheme_uint16::BootstrappingOne(
 	const std::shared_ptr<MatGSWparams_uint16> Matparams,
 	const std::shared_ptr<VecLWEparams_uint16> Vecparams,
 	const std::shared_ptr<MatGSWCiphertext_uint16> MatCipher,
-	const std::shared_ptr<VecLWECiphertext_uint16> VecCipher) const {
-	
+	const std::shared_ptr<VecLWECiphertext_uint16> VecCipher) const {	
 	MatGSWEncryptionScheme_uint16 scheme;
 	auto vec = scheme.MatVecMul(Matparams, Vecparams,MatCipher, VecCipher);
 	return vec;
 };
 
-
-
 uint32_t roundingfunc(uint32_t input, uint32_t q, uint32_t t, uint32_t Q)
 {
 	uint32_t delta = floor((double)Q / (double)t);
 	return (uint16_t)(round(((double)input / (double)q) * (double)t)) % t * delta;
-
 }
-
 
 std::shared_ptr<VecLWECiphertext_uint16> BootstrapScheme_uint16::Initialize(
 	const std::shared_ptr<VecLWEparams_uint16> Vecparams,
@@ -67,17 +54,14 @@ std::shared_ptr<VecLWECiphertext_uint16> BootstrapScheme_uint16::Initialize(
 	veccipher.Seta(vec_a);
 	veccipher.Setb(vec_b);
 	return make_shared<VecLWECiphertext_uint16>(veccipher);
-
 };
-
 
 std::shared_ptr<LWECiphertext_uint16> BootstrapScheme_uint16::Bootstrapping(
 	const std::shared_ptr<MatGSWparams_uint16> Matparams,
 	const std::shared_ptr<VecLWEparams_uint16> Vecparams,
 	const std::shared_ptr<LWECiphertext_uint16> InputLWEcipher,
 	const std::shared_ptr<MatGSWSecretKey_uint16> MatSecret,
-	const std::shared_ptr<LWESecretKey_uint16> InputLWESecret)const {
-	
+	const std::shared_ptr<LWESecretKey_uint16> InputLWESecret)const {	
 	uint16_t b = InputLWEcipher->Getb();
 	vector<uint16_t> vec_a = InputLWEcipher->Geta();
 	
@@ -92,12 +76,6 @@ std::shared_ptr<LWECiphertext_uint16> BootstrapScheme_uint16::Bootstrapping(
 	BootstrapScheme_uint16 bootscheme;
 	MatGSWEncryptionScheme_uint16 matschem;
 	auto acc=bootscheme.Initialize(Vecparams, b);
-	
-//	cout << "\nb=" << b << "\t acc. a=" << acc->Geta() << "\t acc. b=" << acc->Getb();
-
-	//cout << "\n lwe=" << lwesec;
-
-//	cout << "\n LWEcipher a=" << InputLWEcipher->Geta() << "\n LWEcipher b= " << InputLWEcipher->Getb();
 
 	uint32_t N = Matparams->GetN();
 	uint32_t q = Matparams->Getq();
@@ -122,16 +100,8 @@ std::shared_ptr<LWECiphertext_uint16> BootstrapScheme_uint16::Bootstrapping(
 				auto plian = matschem.SetPerM(Matparams, ((uint16_t)pow(2,j)*lwesec[i])%q);
 				auto matcipher = matschem.Encrypt(Matparams, MatSecret, plian);
 				acc = matschem.MatVecMul(Matparams, Vecparams, matcipher, acc);
-			//	VecLWEPlaintext* plainresult = new VecLWEPlaintext();
-		//		veclwescheme.DecryptNoEncode(Vecparams, vecsecptr, acc, plainresult);
-		//		cout << "\n when i=" << i << " j=" << j << " " << "-vec_a[" << i << "]=" << a_sp
-		//			<< " a_sp_decomp[" << j << "]=" << a_sp_decomp[j] <<
-			//		" lwesec[" << i << "]=" << lwesec[i] <<" integer="<<integer<< " acc message=" << acc->Getb() << " \nplian=" << plian->GetM();
-			//	cout << "\n after operation plian=" << plainresult->Getm();
 			}
-			
 		}
-		
 	}
 	
 	
@@ -151,7 +121,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> BootstrapScheme_uint32::BootKeyGenOne(
 	const std::shared_ptr<MatGSWparams_uint32> params,
 	const std::shared_ptr<MatGSWSecretKey_uint32> secret,
 	const uint32_t m) const {
-
 	MatGSWEncryptionScheme_uint32 scheme;
 	auto plain = scheme.SetPerM(params, m);
 	auto cipher = scheme.Encrypt(params, secret, plain);
@@ -164,7 +133,6 @@ std::shared_ptr<VecLWECiphertext_uint32> BootstrapScheme_uint32::BootstrappingOn
 	const std::shared_ptr<VecLWEparams_uint32> Vecparams,
 	const std::shared_ptr<MatGSWCiphertext_uint32> MatCipher,
 	const std::shared_ptr<VecLWECiphertext_uint32> VecCipher) const {
-
 	MatGSWEncryptionScheme_uint32 scheme;
 	auto vec = scheme.MatVecMul(Matparams, Vecparams, MatCipher, VecCipher);
 	return vec;
@@ -175,16 +143,12 @@ std::shared_ptr<VecLWECiphertext_uint32> BootstrapScheme_uint32::BootstrappingOn
 uint32_t roundingfunc(uint32_t input, uint32_t q, uint32_t t, uint64_t Q)
 {
 	uint32_t delta = floor((double)Q / (double)t);
-//	cout << "\ndelta=" << delta;
 	return (uint32_t)(round(((double)input / (double)q) * (double)t)) % t * delta;
-
 }
 
 uint32_t BooleanGate(uint32_t input, uint32_t q, uint32_t t, uint64_t Q, Boolean BL)
-{
-	
+{	
 	uint32_t delta = floor((double)Q / (double)t);
-	//cout << "\nt="<<t<<" Q="<<Q;
 	uint32_t x = (uint32_t)(round(((double)input / (double)q) * (double)t)) % t;
 	switch (BL)
 	{
@@ -210,9 +174,7 @@ uint32_t BooleanGate(uint32_t input, uint32_t q, uint32_t t, uint64_t Q, Boolean
 	default: cout << "Not a correct Boolean"; return 0;
 		break;
 	}
-
 }
-
 
 std::shared_ptr<VecLWECiphertext_uint32> BootstrapScheme_uint32::Initialize(
 	const std::shared_ptr<VecLWEparams_uint32> Vecparams,
@@ -273,7 +235,6 @@ std::shared_ptr<VecLWECiphertext_uint32> BootstrapScheme_uint32::InitializeBool(
 	veccipher.Seta(vec_a);
 	veccipher.Setb(vec_b);
 	return make_shared<VecLWECiphertext_uint32>(veccipher);
-
 };
 
 
@@ -291,19 +252,12 @@ std::shared_ptr<LWECiphertext_uint32> BootstrapScheme_uint32::Bootstrapping(
 
 	VecLWESecretKey_uint32 vecsec;
 	vecsec.SetS(MatSecret->GetS());
-	//	auto vecsecptr = make_shared<VecLWESecretKey>(vecsec);
 
 	vector<uint32_t> lwesec = InputLWESecret->Gets();
 
 	BootstrapScheme_uint32 bootscheme;
 	MatGSWEncryptionScheme_uint32 matschem;
 	auto acc = bootscheme.Initialize(Vecparams, b);
-
-	//	cout << "\nb=" << b << "\t acc. a=" << acc->Geta() << "\t acc. b=" << acc->Getb();
-
-		//cout << "\n lwe=" << lwesec;
-
-	//	cout << "\n LWEcipher a=" << InputLWEcipher->Geta() << "\n LWEcipher b= " << InputLWEcipher->Getb();
 
 	uint32_t N = Matparams->GetN();
 	uint32_t q = Matparams->Getq();
@@ -328,24 +282,14 @@ std::shared_ptr<LWECiphertext_uint32> BootstrapScheme_uint32::Bootstrapping(
 				auto plian = matschem.SetPerM(Matparams, ((uint32_t)pow(2, j) * lwesec[i]) % q);
 				auto matcipher = matschem.Encrypt(Matparams, MatSecret, plian);
 				acc = matschem.MatVecMul(Matparams, Vecparams, matcipher, acc);
-				//	VecLWEPlaintext* plainresult = new VecLWEPlaintext();
-			//		veclwescheme.DecryptNoEncode(Vecparams, vecsecptr, acc, plainresult);
-			//		cout << "\n when i=" << i << " j=" << j << " " << "-vec_a[" << i << "]=" << a_sp
-			//			<< " a_sp_decomp[" << j << "]=" << a_sp_decomp[j] <<
-				//		" lwesec[" << i << "]=" << lwesec[i] <<" integer="<<integer<< " acc message=" << acc->Getb() << " \nplian=" << plian->GetM();
-				//	cout << "\n after operation plian=" << plainresult->Getm();
 			}
-
 		}
-
 	}
-
 
 	LWECiphertext_uint32 retu_cipher;
 	retu_cipher.Seta(acc->Geta());
 	retu_cipher.Setb((acc->Getb())[0]);
 	return make_shared<LWECiphertext_uint32>(retu_cipher);
-
 };
 
 
@@ -356,7 +300,6 @@ std::shared_ptr<LWECiphertext_uint32> BootstrapScheme_uint32::BootstrappingBool(
 	const std::shared_ptr<MatGSWSecretKey_uint32> MatSecret,
 	const std::shared_ptr<LWESecretKey_uint32> InputLWESecret,
 	Boolean BL)const {
-
 	uint32_t b = InputLWEcipher->Getb();
 	vector<uint32_t> vec_a = InputLWEcipher->Geta();
 
@@ -364,19 +307,12 @@ std::shared_ptr<LWECiphertext_uint32> BootstrapScheme_uint32::BootstrappingBool(
 
 	VecLWESecretKey_uint32 vecsec;
 	vecsec.SetS(MatSecret->GetS());
-	//	auto vecsecptr = make_shared<VecLWESecretKey>(vecsec);
 
 	vector<uint32_t> lwesec = InputLWESecret->Gets();
 
 	BootstrapScheme_uint32 bootscheme;
 	MatGSWEncryptionScheme_uint32 matschem;
 	auto acc = bootscheme.InitializeBool(Vecparams, b,BL);
-
-	//	cout << "\nb=" << b << "\t acc. a=" << acc->Geta() << "\t acc. b=" << acc->Getb();
-
-		//cout << "\n lwe=" << lwesec;
-
-	//	cout << "\n LWEcipher a=" << InputLWEcipher->Geta() << "\n LWEcipher b= " << InputLWEcipher->Getb();
 
 	uint32_t N = Matparams->GetN();
 	uint32_t q = Matparams->Getq();
@@ -401,22 +337,11 @@ std::shared_ptr<LWECiphertext_uint32> BootstrapScheme_uint32::BootstrappingBool(
 				auto plian = matschem.SetPerM(Matparams, ((uint32_t)pow(2, j) * lwesec[i]) % q);
 				auto matcipher = matschem.Encrypt(Matparams, MatSecret, plian);
 				acc = matschem.MatVecMul(Matparams, Vecparams, matcipher, acc);
-				//	VecLWEPlaintext* plainresult = new VecLWEPlaintext();
-			//		veclwescheme.DecryptNoEncode(Vecparams, vecsecptr, acc, plainresult);
-			//		cout << "\n when i=" << i << " j=" << j << " " << "-vec_a[" << i << "]=" << a_sp
-			//			<< " a_sp_decomp[" << j << "]=" << a_sp_decomp[j] <<
-				//		" lwesec[" << i << "]=" << lwesec[i] <<" integer="<<integer<< " acc message=" << acc->Getb() << " \nplian=" << plian->GetM();
-				//	cout << "\n after operation plian=" << plainresult->Getm();
 			}
-
 		}
-
 	}
-
-
 	LWECiphertext_uint32 retu_cipher;
 	retu_cipher.Seta(acc->Geta());
 	retu_cipher.Setb((acc->Getb())[0]);
 	return make_shared<LWECiphertext_uint32>(retu_cipher);
-
 };

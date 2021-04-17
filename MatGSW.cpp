@@ -1,4 +1,3 @@
-
 #include"MatGSW.h"
 #include"random.h"
 #include"TestTime.h"
@@ -23,8 +22,6 @@ std::shared_ptr<MatGSWSecretKey_uint16> MatGSWEncryptionScheme_uint16::KeyGen(
 	unsigned char* output_2 = new unsigned char[32];
 
 	(*RNG_new_1).init(seed, 32);
-
-	//	(*RNG_new_1).call_bytes(output_2, 32);
 
 	for(long i=0;i<q;i++)
 		for(long j=0;j<N;j++)
@@ -61,8 +58,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 			break; }
 	}
 
-	//cout << "\n int_message=" << int_message;
-
 	vector<vector<uint16_t>> MS(q);//-MS
 	for (long i = 0; i < q; i++)
 		MS[i].resize(N);
@@ -71,7 +66,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 		for (long j = 0; j < N; j++)
 			MS[i][j] = (Q - S[(q + i - int_message) % q][j]) % Q;
 	
-	//cout << "\n In Fast -MS=" << MS;
 	cout << "\n Generate MS";
 	for(long i=0;i<q;i++)
 		for (long j = 0; j < N*l; j+=l)
@@ -84,7 +78,7 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 			{
 				MSG[(int_message + i) % q][i * l + k+N*l] = (1 << k);
 			}
-//	cout << "\n In Fast MSG=" << MSG;
+
 	vector<vector<uint16_t>> B(q);
 	for (long i = 0; i < q; i++)
 	{
@@ -95,32 +89,12 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 	{
 		E[i].resize((N + q) * l);
 	}
-
-
-	//vector<vector<uint16_t>> MS(q);//(-MS||M)
-	//for (long i = 0; i < q; i++)
-	//	MS[i].resize(N + q);
-
-	//
-
-	//
-
-	//vector<uint16_t> g(l);
-	//for (long i = 0; i < l; i++)
-	//	g[i] = (1 << i);
-
-	//for (long i = 0; i < N + q; i++)
-	//	for (long j = i * l; j < (i + 1) * l; j++)
-	//		G[i][j] = g[j - i * l];
-	
 	MatGSWCiphertext_uint16 cipher;
-
 
 	//Generate matrix A
 	vector<vector<uint16_t>> A(N);
 	for (long i = 0; i < N; i++)
 		A[i].resize((N + q) * l);
-	
 
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
@@ -137,59 +111,25 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 			A[i][j] = (((uint16_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-	//	if(i%40==0)cout << "*";
 	}
 	cipher.SetA(A);
 
 	//Compute B
-
-
-
-	//cout << "\n Generat E";
 	for (long i = 0; i < q; i++) {
-	//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++)
 			E[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
 	}
-	//cout << "\n Generat MS" ;
-	/*for (long i = 0; i < q; i++)
-		for (long j = 0; j < N; j++)
-			for (long k = 0; k < q; k++)
-				MS[i][j] += (-M[i][k]) * S[k][j];
-	
-	for (long i = 0; i < q; i++)
-		for (long j = N; j < N + q; j++)
-			MS[i][j] = M[i][j-N];*/
-	//cout << "\n Generat MSG";
-
-
 	TimeVar t;
 	double processingTime(0.0);
 
-//	cout << "\nMS=" << MS;
-	//(-MS||M)G
-//	for (long i = 0; i < q; i++) {
-////		if (i % 25 == 0)cout << "*";
-//	//	TIC(t);
-//		for (long j = 0; j < (N + q) * l; j++)
-//			for (long k = 0; k < N + q; k++)
-//				MSG[i][j] += MS[i][k] * G[k][j];
-	//	processingTime = TOC(t);
-	//	std::cout
-	//		<< "\nMatGSW SecretKeyGen: "
-	//		<< processingTime << "ms" << std::endl;
-
-//	}
-//	cout << "\nMSG=" << MSG;
 	cout << "\n Generat B";
 	for (long i = 0; i < q; i++) {
-	//	if (i % (q / 10) == 0)cout << "*";
+
 		TIC(t);
 		for (long j = 0; j < (N + q) * l; j++) {
 			for (long k = 0; k < N; k++)
 			{
 				B[i][j] += S[i][k] * A[k][j];
-				//	B[i][j] += S[i][k] * A[k][j]  + MSG[i][j];
 			}
 			B[i][j] += E[i][j] + MSG[i][j];
 		}
@@ -199,14 +139,8 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt_
 				<< processingTime << "ms" << std::endl;
 	}
 	cipher.SetB(B);
-
 	return make_shared<MatGSWCiphertext_uint16>(cipher);
-
 };
-
-
-
-
 
 std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 	const std::shared_ptr<MatGSWparams_uint16> params,
@@ -232,7 +166,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 		E[i].resize((N + q) * l);
 	}
 
-
 	vector<vector<uint16_t>> MS(q);//(-MS||M)
 	for (long i = 0; i < q; i++)
 		MS[i].resize(N + q);
@@ -240,8 +173,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 	vector<vector<uint16_t>> MSG(q);//(-MS||M)G
 	for (long i = 0; i < q; i++)
 		MSG[i].resize((N + q) * l);
-
-
 
 	vector<uint16_t> g(l);
 	for (long i = 0; i < l; i++)
@@ -253,19 +184,17 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 
 	MatGSWCiphertext_uint16 cipher;
 
-
 	//Generate matrix A
 	vector<vector<uint16_t>> A(N);
 	for (long i = 0; i < N; i++)
 		A[i].resize((N + q) * l);
-
 
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
 	unsigned char* output_2 = new unsigned char[32];
 	(*RNG_new_1).init(seed, 32);
 	short cnt = 0;
-	//	cout << "\n Generate A";
+
 	for (long i = 0; i < N; i++)
 	{
 		for (long j = 0; j < (N + q) * l; j++)
@@ -275,21 +204,14 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 			A[i][j] = (((uint16_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-		//	if(i%40==0)cout << "*";
 	}
 	cipher.SetA(A);
 
 	//Compute B
-
-
-
-	//cout << "\n Generat E";
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++)
 			E[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
 	}
-	//cout << "\n Generat MS" ;
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N; j++)
 			for (long k = 0; k < q; k++)
@@ -298,46 +220,26 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::Encrypt(
 	for (long i = 0; i < q; i++)
 		for (long j = N; j < N + q; j++)
 			MS[i][j] = M[i][j - N];
-	//cout << "\n Generat MSG";
-	
 
 	TimeVar t;
 	double processingTime(0.0);
 
-	//	cout << "\nMS=" << MS;
-		//(-MS||M)G
 	for (long i = 0; i < q; i++) {
-		//		if (i % 25 == 0)cout << "*";
-			//	TIC(t);
 		for (long j = 0; j < (N + q) * l; j++)
 			for (long k = 0; k < N + q; k++)
 				MSG[i][j] += MS[i][k] * G[k][j];
-		//	processingTime = TOC(t);
-		//	std::cout
-		//		<< "\nMatGSW SecretKeyGen: "
-		//		<< processingTime << "ms" << std::endl;
-
 	}
-	//cout << "\n In Encr -MS||M=" << MS;
-
-	//cout << "\n In Encr MSG=" << MSG;
-	//	cout << "\nMSG=" << MSG;
-	//	cout << "\n Generat B";
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++) {
 			for (long k = 0; k < N; k++)
 			{
 				B[i][j] += S[i][k] * A[k][j];
-				//	B[i][j] += S[i][k] * A[k][j]  + MSG[i][j];
 			}
 			B[i][j] += E[i][j] + MSG[i][j];
 		}
 	}
 	cipher.SetB(B);
-
 	return make_shared<MatGSWCiphertext_uint16>(cipher);
-
 };
 
 
@@ -357,7 +259,6 @@ std::shared_ptr<MatGSWPlaintext_uint16> MatGSWEncryptionScheme_uint16::SetPerM(
 	
 	plain.SetM(M);
 	return make_shared<MatGSWPlaintext_uint16>(plain);
-
 };
 
 void MatGSWEncryptionScheme_uint16::Decrypt(const std::shared_ptr<MatGSWparams_uint16> params,
@@ -444,7 +345,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::MatAdd(
  vector<uint16_t> vecGinverse_uint16(vector<uint16_t> vec_number, long row, long l) {
 
 	 vector<uint16_t> vecinv(l * row);
-//	 cout << "\n infunc vecinv=" << vecinv;
 	 vector<uint16_t> inv(l);
 	 for (long i = 0; i < row; i++)
 	 {
@@ -473,7 +373,6 @@ std::shared_ptr<MatGSWCiphertext_uint16> MatGSWEncryptionScheme_uint16::MatAdd(
 	 {
 		 matinv[i] = vecGinverse_uint16(mat_number_T[i], row, l);
 	 }
-
 	 return matinv;
  };
 
@@ -541,7 +440,6 @@ std::shared_ptr<VecLWECiphertext_uint16> MatGSWEncryptionScheme_uint16::MatVecMu
 	uint32_t l = params->Getl();
 	uint32_t Q = params->GetQ();
 
-
 	uint32_t N2 = params2->GetN();
 	uint32_t q2 = params2->Getq();
 	uint32_t l2 = params2->Getl();
@@ -556,18 +454,13 @@ std::shared_ptr<VecLWECiphertext_uint16> MatGSWEncryptionScheme_uint16::MatVecMu
 	vector<uint16_t> a2 = cipher2->Geta();
 	vector<uint16_t> b2 = cipher2->Getb();
 
-	
-
 	vector<uint16_t> C2(N + q);
 	
-
 	copy(a2.begin(), a2.end(), C2.begin());
 	copy(b2.begin(), b2.end(), C2.begin() + N);
 
-
 	vector<uint16_t> a(N);
 	vector<uint16_t> b(q);
-	
 
 	vector<uint16_t> C2inverse = vecGinverse_uint16(C2, N + q, l);
 
@@ -594,7 +487,6 @@ uint16_t MatGSWEncryptionScheme_uint16::VecVecMul(
 	uint32_t l = params->Getl();
 	uint32_t Q = params->GetQ();
 
-
 	uint32_t N2 = params2->GetN();
 	uint32_t q2 = params2->Getq();
 	uint32_t l2 = params2->Getl();
@@ -603,50 +495,25 @@ uint16_t MatGSWEncryptionScheme_uint16::VecVecMul(
 	if ((N != N2) || (q != q2) || (l != l2) || (Q != Q2))cout << "\nwrong in MatVecMul, MatGSW VecLWE parames not equal\n";
 
 	//VecLWECiphertext cipher;
-
-//	vector<vector<uint16_t>> A1 = cipher1->GetA();
-//	vector<vector<uint16_t>> B1 = cipher1->GetB();
 	vector<uint16_t> a2 = cipher2->Geta();
 	vector<uint16_t> b2 = cipher2->Getb();
 
-
-
 	vector<uint16_t> C2(N + q);
-
 
 	copy(a2.begin(), a2.end(), C2.begin());
 	copy(b2.begin(), b2.end(), C2.begin() + N);
-
-
-//	vector<uint16_t> a(N);
-//	vector<uint16_t> b(q);
 
 	uint16_t a0=0;
 
 	vector<uint16_t> C2inverse = vecGinverse_uint16(C2, N + q, l);
 
-	
 	for (long k = 0; k < (N + q) * l; k++)
 			a0 += cipher1[k] * C2inverse[k];
-
-
-	/*cipher.Seta(a);
-	cipher.Setb(b);*/
 	return a0;
-
 };
 
 
-
-
-
 //-----------------------------------------------------uint32----------------------
-
-
-
-
-
-
 
 std::shared_ptr<MatGSWSecretKey_uint32> MatGSWEncryptionScheme_uint32::KeyGen(
 	const std::shared_ptr<MatGSWparams_uint32> params) const {
@@ -668,9 +535,6 @@ std::shared_ptr<MatGSWSecretKey_uint32> MatGSWEncryptionScheme_uint32::KeyGen(
 	unsigned char* output_2 = new unsigned char[32];
 
 	(*RNG_new_1).init(seed, 32);
-
-	//	(*RNG_new_1).call_bytes(output_2, 32);
-
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N; j++)
 			secret[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
@@ -691,47 +555,11 @@ void MatGSWEncryptionScheme_uint32::Encrypt_Fast_TEST(
 	uint32_t l = params->Getl();
 	vector<vector<uint32_t>> S = sk->GetS();
 	vector<vector<uint32_t>> M = m->GetM();
-	//vector<vector<uint32_t>> G(N + q);
-	//for (long i = 0; i < N + q; i++)
-	//	G[i].resize((N + q) * l);
 
 	vector<vector<uint32_t>> MSG(1);//(-MS||M)G
 	for (long i = 0; i < 1; i++)
 		MSG[i].resize((N + q) * l);
 
-	//long int_message = 0;
-	//for (long i = 0; i < q; i++)
-	//{
-	//	if (M[0][i] == 1) {
-	//		int_message = (q - i) % q;
-	//		break;
-	//	}
-	//}
-
-	////cout << "\n int_message=" << int_message;
-
-	//vector<vector<uint32_t>> MS(q);//-MS
-	//for (long i = 0; i < q; i++)
-	//	MS[i].resize(N);
-	//cout << "\n Generate MS";
-	//for (long i = 0; i < q; i++)
-	//	for (long j = 0; j < N; j++)
-	//		MS[i][j] = (Q - S[(q + i - int_message) % q][j]) % Q;
-
-	////cout << "\n In Fast -MS=" << MS;
-	//cout << "\n Generate MS";
-	//for (long i = 0; i < q; i++)
-	//	for (long j = 0; j < N * l; j += l)
-	//		for (long k = 0; k < l; k++)
-	//		{
-	//			MSG[i][j + k] = (MS[i][j / l] << k);
-	//		}
-	//for (long i = 0; i < q; i++)
-	//	for (long k = 0; k < l; k++)
-	//	{
-	//		MSG[(int_message + i) % q][i * l + k + N * l] = (1 << k);
-	//	}
-	//	cout << "\n In Fast MSG=" << MSG;
 	vector<vector<uint32_t>> B(1);
 	for (long i = 0; i < 1; i++)
 	{
@@ -743,31 +571,12 @@ void MatGSWEncryptionScheme_uint32::Encrypt_Fast_TEST(
 		E[i].resize(1);
 	}
 
-
-	//vector<vector<uint16_t>> MS(q);//(-MS||M)
-	//for (long i = 0; i < q; i++)
-	//	MS[i].resize(N + q);
-
-	//
-
-	//
-
-	//vector<uint16_t> g(l);
-	//for (long i = 0; i < l; i++)
-	//	g[i] = (1 << i);
-
-	//for (long i = 0; i < N + q; i++)
-	//	for (long j = i * l; j < (i + 1) * l; j++)
-	//		G[i][j] = g[j - i * l];
-
 	MatGSWCiphertext_uint32 cipher;
-
 
 	//Generate matrix A
 	vector<vector<uint32_t>> A(N);
 	for (long i = 0; i < N; i++)
 		A[i].resize(1);
-
 
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
@@ -783,57 +592,23 @@ void MatGSWEncryptionScheme_uint32::Encrypt_Fast_TEST(
 			A[i][j] = (((uint32_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-		//	if(i%40==0)cout << "*";
 	}
 	cipher.SetA(A);
 
 	//Compute B
 
-
-
-	//cout << "\n Generat E";
 	for (long i = 0; i < 1; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j <1; j++)
 			E[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
 	}
-	//cout << "\n Generat MS" ;
-	/*for (long i = 0; i < q; i++)
-		for (long j = 0; j < N; j++)
-			for (long k = 0; k < q; k++)
-				MS[i][j] += (-M[i][k]) * S[k][j];
-
-	for (long i = 0; i < q; i++)
-		for (long j = N; j < N + q; j++)
-			MS[i][j] = M[i][j-N];*/
-			//cout << "\n Generat MSG";
-
-
-
-	//	cout << "\nMS=" << MS;
-		//(-MS||M)G
-	//	for (long i = 0; i < q; i++) {
-	////		if (i % 25 == 0)cout << "*";
-	//	//	TIC(t);
-	//		for (long j = 0; j < (N + q) * l; j++)
-	//			for (long k = 0; k < N + q; k++)
-	//				MSG[i][j] += MS[i][k] * G[k][j];
-		//	processingTime = TOC(t);
-		//	std::cout
-		//		<< "\nMatGSW SecretKeyGen: "
-		//		<< processingTime << "ms" << std::endl;
-
-	//	}
-	//	cout << "\nMSG=" << MSG;
+	
 	cout << "\n Generat B";
 	for (long i = 0; i < 1; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		TIC(t);
 		for (long j = 0; j <1; j++) {
 			for (long k = 0; k < N; k++)
 			{
 				B[i][j] += S[i][k] * A[k][j];
-				//	B[i][j] += S[i][k] * A[k][j]  + MSG[i][j];
 			}
 			B[i][j] += E[i][j] + MSG[i][j];
 		}
@@ -846,9 +621,6 @@ void MatGSWEncryptionScheme_uint32::Encrypt_Fast_TEST(
 
 	cout << "\nGenerate one MatGSW ciphertext time is " << onetime << "ms";
 	cipher.SetB(B);
-
-	
-
 };
 
 
@@ -880,8 +652,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 		}
 	}
 
-	//cout << "\n int_message=" << int_message;
-
 	vector<vector<uint32_t>> MS(q);//-MS
 	for (long i = 0; i < q; i++)
 		MS[i].resize(N);
@@ -890,7 +660,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 		for (long j = 0; j < N; j++)
 			MS[i][j] = (Q - S[(q + i - int_message) % q][j]) % Q;
 
-	//cout << "\n In Fast -MS=" << MS;
 	cout << "\n Generate MS";
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N * l; j += l)
@@ -903,7 +672,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 		{
 			MSG[(int_message + i) % q][i * l + k + N * l] = (1 << k);
 		}
-	//	cout << "\n In Fast MSG=" << MSG;
 	vector<vector<uint32_t>> B(q);
 	for (long i = 0; i < q; i++)
 	{
@@ -915,23 +683,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 		E[i].resize((N + q) * l);
 	}
 
-
-	//vector<vector<uint16_t>> MS(q);//(-MS||M)
-	//for (long i = 0; i < q; i++)
-	//	MS[i].resize(N + q);
-
-	//
-
-	//
-
-	//vector<uint16_t> g(l);
-	//for (long i = 0; i < l; i++)
-	//	g[i] = (1 << i);
-
-	//for (long i = 0; i < N + q; i++)
-	//	for (long j = i * l; j < (i + 1) * l; j++)
-	//		G[i][j] = g[j - i * l];
-
 	MatGSWCiphertext_uint32 cipher;
 
 
@@ -939,8 +690,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 	vector<vector<uint32_t>> A(N);
 	for (long i = 0; i < N; i++)
 		A[i].resize((N + q) * l);
-
-
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
 	unsigned char* output_2 = new unsigned char[32];
@@ -956,59 +705,26 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt_
 			A[i][j] = (((uint32_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-		//	if(i%40==0)cout << "*";
 	}
 	cipher.SetA(A);
 
 	//Compute B
 
-
-
-	//cout << "\n Generat E";
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++)
 			E[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
 	}
-	//cout << "\n Generat MS" ;
-	/*for (long i = 0; i < q; i++)
-		for (long j = 0; j < N; j++)
-			for (long k = 0; k < q; k++)
-				MS[i][j] += (-M[i][k]) * S[k][j];
-
-	for (long i = 0; i < q; i++)
-		for (long j = N; j < N + q; j++)
-			MS[i][j] = M[i][j-N];*/
-			//cout << "\n Generat MSG";
-
 
 	TimeVar t;
 	double processingTime(0.0);
 
-	//	cout << "\nMS=" << MS;
-		//(-MS||M)G
-	//	for (long i = 0; i < q; i++) {
-	////		if (i % 25 == 0)cout << "*";
-	//	//	TIC(t);
-	//		for (long j = 0; j < (N + q) * l; j++)
-	//			for (long k = 0; k < N + q; k++)
-	//				MSG[i][j] += MS[i][k] * G[k][j];
-		//	processingTime = TOC(t);
-		//	std::cout
-		//		<< "\nMatGSW SecretKeyGen: "
-		//		<< processingTime << "ms" << std::endl;
-
-	//	}
-	//	cout << "\nMSG=" << MSG;
 	cout << "\n Generat B";
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		TIC(t);
 		for (long j = 0; j < (N + q) * l; j++) {
 			for (long k = 0; k < N; k++)
 			{
 				B[i][j] += S[i][k] * A[k][j];
-				//	B[i][j] += S[i][k] * A[k][j]  + MSG[i][j];
 			}
 			B[i][j] += E[i][j] + MSG[i][j];
 		}
@@ -1051,7 +767,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt(
 		E[i].resize((N + q) * l);
 	}
 
-
 	vector<vector<uint32_t>> MS(q);//(-MS||M)
 	for (long i = 0; i < q; i++)
 		MS[i].resize(N + q);
@@ -1059,8 +774,6 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt(
 	vector<vector<uint32_t>> MSG(q);//(-MS||M)G
 	for (long i = 0; i < q; i++)
 		MSG[i].resize((N + q) * l);
-
-
 
 	vector<uint32_t> g(l);
 	for (long i = 0; i < l; i++)
@@ -1078,13 +791,11 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt(
 	for (long i = 0; i < N; i++)
 		A[i].resize((N + q) * l);
 
-
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
 	unsigned char* output_2 = new unsigned char[32];
 	(*RNG_new_1).init(seed, 32);
 	short cnt = 0;
-	//	cout << "\n Generate A";
 	for (long i = 0; i < N; i++)
 	{
 		for (long j = 0; j < (N + q) * l; j++)
@@ -1094,21 +805,15 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt(
 			A[i][j] = (((uint32_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-		//	if(i%40==0)cout << "*";
 	}
 	cipher.SetA(A);
 
 	//Compute B
 
-
-
-	//cout << "\n Generat E";
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++)
 			E[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
 	}
-	//cout << "\n Generat MS" ;
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N; j++)
 			for (long k = 0; k < q; k++)
@@ -1117,38 +822,23 @@ std::shared_ptr<MatGSWCiphertext_uint32> MatGSWEncryptionScheme_uint32::Encrypt(
 	for (long i = 0; i < q; i++)
 		for (long j = N; j < N + q; j++)
 			MS[i][j] = M[i][j - N];
-	//cout << "\n Generat MSG";
 
 
 	TimeVar t;
 	double processingTime(0.0);
 
-	//	cout << "\nMS=" << MS;
-		//(-MS||M)G
+
 	for (long i = 0; i < q; i++) {
-		//		if (i % 25 == 0)cout << "*";
-			//	TIC(t);
 		for (long j = 0; j < (N + q) * l; j++)
 			for (long k = 0; k < N + q; k++)
 				MSG[i][j] += MS[i][k] * G[k][j];
-		//	processingTime = TOC(t);
-		//	std::cout
-		//		<< "\nMatGSW SecretKeyGen: "
-		//		<< processingTime << "ms" << std::endl;
-
 	}
-	//cout << "\n In Encr -MS||M=" << MS;
-
-	//cout << "\n In Encr MSG=" << MSG;
-	//	cout << "\nMSG=" << MSG;
-	//	cout << "\n Generat B";
+	
 	for (long i = 0; i < q; i++) {
-		//	if (i % (q / 10) == 0)cout << "*";
 		for (long j = 0; j < (N + q) * l; j++) {
 			for (long k = 0; k < N; k++)
 			{
 				B[i][j] += S[i][k] * A[k][j];
-				//	B[i][j] += S[i][k] * A[k][j]  + MSG[i][j];
 			}
 			B[i][j] += E[i][j] + MSG[i][j];
 		}
@@ -1209,7 +899,6 @@ void MatGSWEncryptionScheme_uint32::Decrypt(const std::shared_ptr<MatGSWparams_u
 		}
 	}
 	result->SetM(M);
-
 };
 
 
@@ -1263,7 +952,6 @@ vector<uint32_t> Ginverse_uint32(uint32_t number, long l) {
 vector<uint32_t> vecGinverse_uint32(vector<uint32_t> vec_number, long row, long l) {
 
 	vector<uint32_t> vecinv(l * row);
-	//	 cout << "\n infunc vecinv=" << vecinv;
 	vector<uint32_t> inv(l);
 	for (long i = 0; i < row; i++)
 	{
@@ -1292,7 +980,6 @@ vector<vector<uint32_t>> matGinverse_uint32(vector<vector<uint32_t>> mat_number,
 	{
 		matinv[i] = vecGinverse_uint32(mat_number_T[i], row, l);
 	}
-
 	return matinv;
 };
 
@@ -1360,7 +1047,6 @@ std::shared_ptr<VecLWECiphertext_uint32> MatGSWEncryptionScheme_uint32::MatVecMu
 	uint32_t l = params->Getl();
 	uint64_t Q = params->GetQ();
 
-
 	uint32_t N2 = params2->GetN();
 	uint32_t q2 = params2->Getq();
 	uint32_t l2 = params2->Getl();
@@ -1375,18 +1061,13 @@ std::shared_ptr<VecLWECiphertext_uint32> MatGSWEncryptionScheme_uint32::MatVecMu
 	vector<uint32_t> a2 = cipher2->Geta();
 	vector<uint32_t> b2 = cipher2->Getb();
 
-
-
 	vector<uint32_t> C2(N + q);
-
 
 	copy(a2.begin(), a2.end(), C2.begin());
 	copy(b2.begin(), b2.end(), C2.begin() + N);
 
-
 	vector<uint32_t> a(N);
 	vector<uint32_t> b(q);
-
 
 	vector<uint32_t> C2inverse = vecGinverse_uint32(C2, N + q, l);
 
@@ -1413,7 +1094,6 @@ uint32_t MatGSWEncryptionScheme_uint32::VecVecMul(
 	uint32_t l = params->Getl();
 	uint64_t Q = params->GetQ();
 
-
 	uint32_t N2 = params2->GetN();
 	uint32_t q2 = params2->Getq();
 	uint32_t l2 = params2->Getl();
@@ -1421,24 +1101,13 @@ uint32_t MatGSWEncryptionScheme_uint32::VecVecMul(
 
 	if ((N != N2) || (q != q2) || (l != l2) || (Q != Q2))cout << "\nwrong in MatVecMul, MatGSW VecLWE parames not equal\n";
 
-	//VecLWECiphertext cipher;
-
-//	vector<vector<uint16_t>> A1 = cipher1->GetA();
-//	vector<vector<uint16_t>> B1 = cipher1->GetB();
 	vector<uint32_t> a2 = cipher2->Geta();
 	vector<uint32_t> b2 = cipher2->Getb();
 
-
-
 	vector<uint32_t> C2(N + q);
-
 
 	copy(a2.begin(), a2.end(), C2.begin());
 	copy(b2.begin(), b2.end(), C2.begin() + N);
-
-
-	//	vector<uint16_t> a(N);
-	//	vector<uint16_t> b(q);
 
 	uint32_t a0 = 0;
 
@@ -1447,10 +1116,5 @@ uint32_t MatGSWEncryptionScheme_uint32::VecVecMul(
 
 	for (long k = 0; k < (N + q) * l; k++)
 		a0 += cipher1[k] * C2inverse[k];
-
-
-	/*cipher.Seta(a);
-	cipher.Setb(b);*/
 	return a0;
-
 };

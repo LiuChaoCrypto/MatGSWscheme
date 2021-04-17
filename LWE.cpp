@@ -1,7 +1,5 @@
-
 #include"LWE.h"
 #include"random.h"
-
 
 std::shared_ptr<LWESecretKey_uint16> LWEEncryptionScheme_uint16::KeyGen(
 	const std::shared_ptr<LWEparams_uint16> params) const {
@@ -44,22 +42,16 @@ std::shared_ptr<LWECiphertext_uint16> LWEEncryptionScheme_uint16::Encrypt(
 	uint32_t t = params->Gett();
 	uint32_t delta = params->Getdelta();
 
-
 	vector<uint16_t> S = sk->Gets();
 	uint16_t message = m->Getm();
 	if (message >= t)cout << "\n error: message >= t!" << endl;
 
 	uint16_t encodem=delta*message;
-//	cout << "\ndelta=" << delta;
-
 
 	LWECiphertext_uint16 cipher;
 	vector<uint16_t> a(n);
 	uint16_t error;
 	uint16_t b=0;
-
-	//Generate vector a
-
 
 	unsigned char* seed = new unsigned char[32];
 	seed[0] = (unsigned)time(NULL);
@@ -78,20 +70,13 @@ std::shared_ptr<LWECiphertext_uint16> LWEEncryptionScheme_uint16::Encrypt(
 	cipher.Seta(a);
 
 	//Compute b
-
-
-
-
+    
 	short integer;
 	integer = sampler_New(5, 3, output_2, RNG_new_1);
 	if (integer < 0) { error = q + integer; }
 	else {
 		error = integer;
 	}
-	
-
-
-//	cout << "\n error=" << error;
 	
 	for (long i = 0; i < n; i++)
 	{
@@ -103,7 +88,6 @@ std::shared_ptr<LWECiphertext_uint16> LWEEncryptionScheme_uint16::Encrypt(
 	cipher.Setb(b);
 
 	return make_shared<LWECiphertext_uint16>(cipher);
-
 };
 
 
@@ -133,10 +117,7 @@ void LWEEncryptionScheme_uint16::Decrypt(const std::shared_ptr<LWEparams_uint16>
 		else { message = integer % q; }
 		
 		message = (short int)(round((double)message * (double)t / (double)q)) % t;
-
-	
 	result->Setm(message);
-
 };
 
 
@@ -168,9 +149,7 @@ std::shared_ptr<LWESecretKey_uint32> LWEEncryptionScheme_uint32::KeyGen(
 		integer = sampler_New(5, 3, output_2, RNG_new_1);
 		if (integer < 0) { secret[i] = q + integer; }
 		else { secret[i] = integer; }
-
 	}
-	//		secret[i]= sampler_New(5, 3, output_2, RNG_new_1)%q;
 
 	sec.Sets(secret);
 	return make_shared<LWESecretKey_uint32>(sec);
@@ -186,22 +165,16 @@ std::shared_ptr<LWECiphertext_uint32> LWEEncryptionScheme_uint32::Encrypt(
 	uint32_t t = params->Gett();
 	uint32_t delta = params->Getdelta();
 
-
 	vector<uint32_t> S = sk->Gets();
 	uint32_t message = m->Getm();
 	if (message >= t)cout << "\n error: message >= t!" << endl;
 
 	uint32_t encodem = delta * message;
-	//	cout << "\ndelta=" << delta;
-
 
 	LWECiphertext_uint32 cipher;
 	vector<uint32_t> a(n);
 	uint32_t error;
 	uint32_t b = 0;
-
-	//Generate vector a
-
 
 	unsigned char* seed = new unsigned char[32];
 	seed[0] = (unsigned)time(NULL);
@@ -219,21 +192,12 @@ std::shared_ptr<LWECiphertext_uint32> LWEEncryptionScheme_uint32::Encrypt(
 
 	cipher.Seta(a);
 
-	//Compute b
-
-
-
-
 	short integer;
 	integer = sampler_New(5, 3, output_2, RNG_new_1);
 	if (integer < 0) { error = q + integer; }
 	else {
 		error = integer;
 	}
-
-
-
-	//	cout << "\n error=" << error;
 
 	for (long i = 0; i < n; i++)
 	{
@@ -245,7 +209,6 @@ std::shared_ptr<LWECiphertext_uint32> LWEEncryptionScheme_uint32::Encrypt(
 	cipher.Setb(b);
 
 	return make_shared<LWECiphertext_uint32>(cipher);
-
 };
 
 
@@ -269,16 +232,12 @@ void LWEEncryptionScheme_uint32::Decrypt(const std::shared_ptr<LWEparams_uint32>
 	{
 		message = (message + (S[i] * a[i]) % q) % q;
 	}
-	//	cout << "\n message=" << message;
 	integer = b - message;
 	if (integer < 0) { message = q + integer; }
 	else { message = integer % q; }
 
 	message = (short int)(round((double)message * (double)t / (double)q)) % t;
-
-
 	result->Setm(message);
-
 };
 
 
@@ -286,7 +245,6 @@ std::shared_ptr <LWECiphertext_uint32>  LWEEncryptionScheme_uint32::LWEadd(
 	const std::shared_ptr<LWEparams_uint32> params,
 	const std::shared_ptr<const LWECiphertext_uint32> cipher1,
 	const std::shared_ptr<const LWECiphertext_uint32> cipher2) const {
-	
 	
 	uint32_t n = params->Getn();
 	uint64_t q = params->Getq();

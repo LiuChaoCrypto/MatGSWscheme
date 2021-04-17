@@ -14,15 +14,12 @@
 using namespace std;
 
 void TestSecurity60_uint16(Method set){
-
 	
 	TimeVar t;
 	double processingTime(0.0);
 
-
 	uint32_t params_Q = pow(2, 16), params_N = 400, params_q, params_t = 2, params_n = 256, params_q2 = pow(2, 9);
 	float params_sigma = 2.12;
-
 
 	switch (set) {
 	case HAOscheme:
@@ -30,20 +27,10 @@ void TestSecurity60_uint16(Method set){
 			break;
 	case MatGSWscheme:
 		params_q = pow(2, 9);
-		break;
-				  
+		break;		  
 	}
-
-
-
-
-
-
 	MatGSWparams_uint16 MatGSWpar1(params_N, params_Q, params_sigma, params_q, params_n);
-
-
 	MatGSWEncryptionScheme_uint16 scheme;
-
 	auto matgswparams = make_shared<MatGSWparams_uint16>(MatGSWpar1);
 
 	TIC(t);
@@ -53,14 +40,9 @@ void TestSecurity60_uint16(Method set){
 	std::cout
 		<< "\nMatGSW SecretKeyGen: "
 		<< processingTime << "us" << std::endl;
-
 	MatGSWPlaintext_uint16* resultM = new MatGSWPlaintext_uint16();
 
 	auto matgswtestm = scheme.SetPerM(matgswparams, 3);
-
-	
-
-
 
 	VecLWEparams_uint16 VecLWEpar1(params_N, params_Q, params_sigma, params_q, params_t);
 	auto veclwepar = make_shared<VecLWEparams_uint16>(VecLWEpar1);
@@ -90,7 +72,6 @@ void TestSecurity60_uint16(Method set){
 
 	long NN = (params_N + params_q) * matgswparams->Getl();
 
-
 	vector<uint16_t> testA(NN);
 
 	unsigned char* seed = new unsigned char[32];
@@ -106,8 +87,6 @@ void TestSecurity60_uint16(Method set){
 			testA[j] = (((uint16_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-		//	if(i%40==0)cout << "*";
-
 	TIC(t);
 	auto vec_cipher = scheme.VecVecMul(matgswparams, veclwepar, testA, veclwecipher);
 
@@ -133,7 +112,6 @@ void TestSecurity60_uint16(Method set){
 	case MatGSWscheme:
 		cout << "Plase waiting. MatGSW encryption take about 20 minutes";
 		break;
-
 	}
 
 	TIC(t);
@@ -142,23 +120,16 @@ void TestSecurity60_uint16(Method set){
 	std::cout
 		<< "\nMatGSW Encrypt: "
 		<< processingTime << "ms" << std::endl;
-
-
 }
 
 
 
 void TestSecurity128_uint16(Method set) {
 
-
 	TimeVar t;
 	double processingTime(0.0);
-
-
 	uint32_t params_Q = pow(2, 16), params_N = 700, params_q, params_t = 2, params_n = 500, params_q2 = pow(2, 9);
 	float params_sigma = 2.12;
-
-
 	switch (set) {
 	case HAOscheme:
 		params_q = 7;
@@ -166,20 +137,9 @@ void TestSecurity128_uint16(Method set) {
 	case MatGSWscheme:
 		params_q = pow(2, 10);
 		break;
-
 	}
-
-
 	cout << "When q=" << params_q << endl;
-
-
-
-
-
-
 	MatGSWparams_uint16 MatGSWpar1(params_N, params_Q, params_sigma, params_q, params_n);
-
-
 	MatGSWEncryptionScheme_uint16 scheme;
 
 	auto matgswparams = make_shared<MatGSWparams_uint16>(MatGSWpar1);
@@ -195,10 +155,6 @@ void TestSecurity128_uint16(Method set) {
 	MatGSWPlaintext_uint16* resultM = new MatGSWPlaintext_uint16();
 
 	auto matgswtestm = scheme.SetPerM(matgswparams, 3);
-
-
-
-
 
 	VecLWEparams_uint16 VecLWEpar1(params_N, params_Q, params_sigma, params_q, params_t);
 	auto veclwepar = make_shared<VecLWEparams_uint16>(VecLWEpar1);
@@ -228,7 +184,6 @@ void TestSecurity128_uint16(Method set) {
 
 	long NN = (params_N + params_q) * matgswparams->Getl();
 
-
 	vector<uint16_t> testA(NN);
 
 	unsigned char* seed = new unsigned char[32];
@@ -244,8 +199,6 @@ void TestSecurity128_uint16(Method set) {
 		testA[j] = (((uint16_t*)output_2)[cnt]);
 		cnt = (cnt + 1) % 16;
 	}
-	//	if(i%40==0)cout << "*";
-
 	TIC(t);
 	auto vec_cipher = scheme.VecVecMul(matgswparams, veclwepar, testA, veclwecipher);
 
@@ -265,13 +218,11 @@ void TestSecurity128_uint16(Method set) {
 		cout << "Bootstrapping Time For onece MatMulVec is VecVecMul*(N+q)=" << oneboot << "s";
 		cout << "\n All time for bootstrapping is oneboot*n*logq=" << oneboot * (double)params_n * 9 / 3600 << "h";
 		break;
-
 	}
 	switch (set) {
 	case MatGSWscheme:
-		cout << "Plase waiting. MatGSW encryption take  minutes";
+		cout << "Plase waiting. MatGSW encryption take minutes";
 		break;
-
 	}
 
 	TIC(t);
@@ -280,8 +231,6 @@ void TestSecurity128_uint16(Method set) {
 	std::cout
 		<< "\nMatGSW Encrypt: "
 		<< processingTime << "ms" << std::endl;
-
-
 }
 
 
@@ -376,7 +325,7 @@ void TestSecurity_uint32(Method set, int security) {
 
 
 
-	cout << "This is a procedure to compute the consume time of KeyGen and Bootstrapping." << endl;
+	cout << "\nThe program is used to roughly estimate the running time of KeyGen and Bootstrapping algorithm." << endl;
 	cout << "The scheme is " << set;
 	cout << "Params is (Q,N,sigma,q,n,sigma',t)=(" << params_Q << "," << params_N << "," << params_sigma << ",";
 	switch (set) {
@@ -388,11 +337,9 @@ void TestSecurity_uint32(Method set, int security) {
 		break;
 	} 
 	cout<< "," << params_n <<","<<params_sigmaLWE<<","<<params_t<<")" << endl;
-	cout << "Params security is" << security << "bit"<<endl;
-
+	cout << "Parameters security is " << security << "bit"<<endl;
 
 	MatGSWparams_uint32 MatGSWpar1(params_N, params_Q, params_sigma, params_q, params_n);
-
 
 	MatGSWEncryptionScheme_uint32 scheme;
 
@@ -409,10 +356,6 @@ void TestSecurity_uint32(Method set, int security) {
 	MatGSWPlaintext_uint32* resultM = new MatGSWPlaintext_uint32();
 
 	auto matgswtestm = scheme.SetPerM(matgswparams, 3);
-
-
-
-
 
 	VecLWEparams_uint32 VecLWEpar1(params_N, params_Q, params_sigma, params_q, params_t);
 	auto veclwepar = make_shared<VecLWEparams_uint32>(VecLWEpar1);
@@ -479,9 +422,7 @@ void TestSecurity_uint32(Method set, int security) {
 		cout << "Bootstrapping time in MatGSWscheme for onece MatGSW ciphertext and VecLWE ciphertext" << endl << " multiplication is VecProTime*(N+q)=" << oneboot << "s";
 		cout << "\n All time in MatGSWscheme for bootstrapping is OneMatMulVec*n*logq=" << oneboot * (double)params_n * params_l / 3600 << "h";
 		break;
-
 	}
-	
 	double onetime=0;
 	
 	scheme.Encrypt_Fast_TEST(matgswparams, matsec, matgswtestm,onetime);
@@ -489,8 +430,7 @@ void TestSecurity_uint32(Method set, int security) {
 	onetime = onetime / 1000;
 	switch (set) {
 	case HAOscheme:
-		
-		cout << "\nKeyGen time in  HAOscheme for all MatGSW ciphertext  is OneMatGenTime*(3t*n*log(q)+qt/2+1)" << onetime*(3*params_t*params_n*params_l+params_q2*params_t/2+1)/3600 << "h"<<endl;
+		cout << "\nKeyGen time in HAOscheme for all MatGSW ciphertext  is OneMatGenTime*(3t*n*log(q)+qt/2+1)=" << onetime*(3*params_t*params_n*params_l+params_q2*params_t/2+1)/3600 << "h"<<endl;
 		break;
 	case MatGSWscheme:
 		cout <<  "\nKeyGen time in MatGSWscheme for all MatGSW ciphertext is OneMatGenTime*n*log(q)= " << onetime * params_n * params_l/ 3600 << "h"<<endl;

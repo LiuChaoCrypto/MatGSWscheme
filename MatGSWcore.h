@@ -12,7 +12,6 @@ using namespace std;
 class MatGSWparams_uint16 {
 public:
 	MatGSWparams_uint16() :m_N(0), m_Q(0), m_sigma(0), m_q(0),m_l(0),m_n(0) {}
-
 	explicit MatGSWparams_uint16(uint32_t t_N, uint32_t t_Q, float t_sigma, uint32_t t_q,uint32_t t_n)
 		: m_N(t_N), m_Q(t_Q), m_sigma(t_sigma), m_q(t_q),m_n(t_n) {
 		if (t_Q != pow(2, 16))cout<<"wrong Q!=2^16";
@@ -47,8 +46,6 @@ public:
 
 	const vector<vector<uint16_t>>& GetB() const { return mat_B; }
 
-	
-
 	void SetA(const vector<vector<uint16_t>>& a) { mat_A = a; }
 	void SetB(const vector<vector<uint16_t>>& b) { mat_B = b; }
 private:
@@ -62,21 +59,16 @@ public:
 	MatGSWSecretKey_uint16() {}
 
 	explicit MatGSWSecretKey_uint16(const vector<vector<uint16_t>>& s) : mat_S(s) {}
-
-
 	const MatGSWSecretKey_uint16& operator=(const MatGSWSecretKey_uint16& rhs) {
 		this->mat_S = rhs.mat_S;
 		return *this;
 	}
 
-
 	const vector<vector<uint16_t>>& GetS() const { return mat_S; }
-
 
 	void SetS(const vector<vector<uint16_t>>& b) { mat_S = b; }
 private:
 	vector<vector<uint16_t>> mat_S;
-
 };
 
 class MatGSWPlaintext_uint16 {
@@ -87,18 +79,10 @@ public:
 
 	const vector<vector<uint16_t>>& GetM() const { return mat_M; }
 
-
 	void SetM(const vector<vector<uint16_t>>& b) { mat_M = b; }
 private:
 	vector<vector<uint16_t>> mat_M;
-
 };
-
-
-
-
-
-
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& v) {
@@ -109,13 +93,6 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& v) {
 	os << " ]";
 	return os;
 }
-
-
-
-
-
-
-
 
 class MatGSWparams_uint32 {
 public:
@@ -155,14 +132,11 @@ public:
 
 	const vector<vector<uint32_t>>& GetB() const { return mat_B; }
 
-
-
 	void SetA(const vector<vector<uint32_t>>& a) { mat_A = a; }
 	void SetB(const vector<vector<uint32_t>>& b) { mat_B = b; }
 private:
 	vector<vector<uint32_t>> mat_A;
 	vector<vector<uint32_t>> mat_B;
-
 };
 
 class MatGSWSecretKey_uint32 {
@@ -170,21 +144,14 @@ public:
 	MatGSWSecretKey_uint32() {}
 
 	explicit MatGSWSecretKey_uint32(const vector<vector<uint32_t>>& s) : mat_S(s) {}
-
-
 	const MatGSWSecretKey_uint32& operator=(const MatGSWSecretKey_uint32& rhs) {
 		this->mat_S = rhs.mat_S;
 		return *this;
 	}
-
-
 	const vector<vector<uint32_t>>& GetS() const { return mat_S; }
-
-
 	void SetS(const vector<vector<uint32_t>>& b) { mat_S = b; }
 private:
 	vector<vector<uint32_t>> mat_S;
-
 };
 
 class MatGSWPlaintext_uint32 {
@@ -195,19 +162,10 @@ public:
 
 	const vector<vector<uint32_t>>& GetM() const { return mat_M; }
 
-
 	void SetM(const vector<vector<uint32_t>>& b) { mat_M = b; }
 private:
 	vector<vector<uint32_t>> mat_M;
-
 };
-
-
-
-
-
-
-
 
 
 #endif

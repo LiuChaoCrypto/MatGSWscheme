@@ -2,7 +2,7 @@
 ====================================================================
 
 
-We implemented our MatGSW bootstrapping scheme to testing the correctness.
+This implementation is used to test the correctness of the bootstrapping procedure from LWE. See 
 
 
 

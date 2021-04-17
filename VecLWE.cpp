@@ -24,8 +24,6 @@ std::shared_ptr<VecLWESecretKey_uint16> VecLWEEncryptionScheme_uint16::KeyGen(
 
 	(*RNG_new_1).init(seed, 32);
 
-	//	(*RNG_new_1).call_bytes(output_2, 32);
-
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N; j++)
 			secret[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
@@ -52,15 +50,12 @@ std::shared_ptr<VecLWECiphertext_uint16> VecLWEEncryptionScheme_uint16::Encrypt(
 	for (long i = 0; i < q; i++)
 		encodem[i] = delta * message[i];
 
-
 	VecLWECiphertext_uint16 cipher;
 	vector<uint16_t> a(N);
 	vector<uint16_t> error(q);
 	vector<uint16_t> b(q);
 
 	//Generate vector a
-	
-
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
 	unsigned char* output_2 = new unsigned char[32];
@@ -73,56 +68,23 @@ std::shared_ptr<VecLWECiphertext_uint16> VecLWEEncryptionScheme_uint16::Encrypt(
 			a[i] = (((uint16_t*)output_2)[cnt]);
 			cnt = (cnt + 1) % 16;
 		}
-
 	cipher.Seta(a);
 
 	//Compute b
-
-
-	
-
 	for (long i = 0; i < q; i++)
 			error[i] = sampler_New(5, 3, output_2, RNG_new_1);
-
-
-
 	for (long i = 0; i < q; i++)
 	{
 		for (long k = 0; k < N; k++)
 		{
 			b[i] += S[i][k] * a[k];
-			
 		}
 		b[i] += error[i] + encodem[i];
-	}
-			
+	}	
 	cipher.Setb(b);
-
 	return make_shared<VecLWECiphertext_uint16>(cipher);
-
 };
 
-
-
-//
-//std::shared_ptr<VecLWEPlaintext> VecLWEEncryptionScheme::SetM(
-//	const std::shared_ptr<VecLWEparams> params, const uint32_t m) const {
-//
-//	uint32_t q = params->Getq();
-//	if (m > q)cout << "wrong in SetM m>q!";
-//
-//	VecLWEPlaintext plain;
-//	vector<vector<uint16_t>> M(q);
-//	for (long i = 0; i < q; i++)
-//		M[i].resize(q);
-//
-//	for (long i = 0; i < q; i++)
-//		M[i][(q + i - m) % q] = 1;
-//
-//	plain.SetM(M);
-//	return make_shared<VecLWEPlaintext>(plain);
-//
-//};
 
 void VecLWEEncryptionScheme_uint16::Decrypt(const std::shared_ptr<VecLWEparams_uint16> params,
 	const std::shared_ptr<const VecLWESecretKey_uint16> sk,
@@ -140,21 +102,16 @@ void VecLWEEncryptionScheme_uint16::Decrypt(const std::shared_ptr<VecLWEparams_u
 
 	vector<uint16_t> message(q);
 
-
 	for (long i = 0; i < q; i++)
-	{
-		
-		
+	{		
 			for (long k = 0; k < N; k++)
 			{
 				message[i] += (-S[i][k]) * a[k];
 			}
 			message[i] += b[i];
-			message[i] = (short int)(round((double)message[i] * (double)t / (double)Q)) % t;
-		
+			message[i] = (short int)(round((double)message[i] * (double)t / (double)Q)) % t;		
 	}
 	result->SetM(message);
-
 };
 
 
@@ -174,21 +131,15 @@ void VecLWEEncryptionScheme_uint16::DecryptNoEncode(const std::shared_ptr<VecLWE
 
 	vector<uint16_t> message(q);
 
-
 	for (long i = 0; i < q; i++)
 	{
-
-
 		for (long k = 0; k < N; k++)
 		{
 			message[i] += (-S[i][k]) * a[k];
 		}
 		message[i] += b[i];
-	//	message[i] = (short int)(round((double)message[i] * (double)t / (double)Q)) % t;
-
 	}
 	result->SetM(message);
-
 };
 
 
@@ -218,8 +169,6 @@ std::shared_ptr<VecLWESecretKey_uint32> VecLWEEncryptionScheme_uint32::KeyGen(
 
 	(*RNG_new_1).init(seed, 32);
 
-	//	(*RNG_new_1).call_bytes(output_2, 32);
-
 	for (long i = 0; i < q; i++)
 		for (long j = 0; j < N; j++)
 			secret[i][j] = sampler_New(5, 3, output_2, RNG_new_1);
@@ -246,15 +195,12 @@ std::shared_ptr<VecLWECiphertext_uint32> VecLWEEncryptionScheme_uint32::Encrypt(
 	for (long i = 0; i < q; i++)
 		encodem[i] = delta * message[i];
 
-
 	VecLWECiphertext_uint32 cipher;
 	vector<uint32_t> a(N);
 	vector<uint32_t> error(q);
 	vector<uint32_t> b(q);
 
 	//Generate vector a
-
-
 	unsigned char* seed = new unsigned char[32];
 	RNG_New* RNG_new_1 = new RNG_New();
 	unsigned char* output_2 = new unsigned char[32];
@@ -267,19 +213,11 @@ std::shared_ptr<VecLWECiphertext_uint32> VecLWEEncryptionScheme_uint32::Encrypt(
 		a[i] = (((uint32_t*)output_2)[cnt]);
 		cnt = (cnt + 1) % 16;
 	}
-
 	cipher.Seta(a);
 
 	//Compute b
-
-
-
-
 	for (long i = 0; i < q; i++)
 		error[i] = sampler_New(5, 3, output_2, RNG_new_1);
-
-
-
 	for (long i = 0; i < q; i++)
 	{
 		for (long k = 0; k < N; k++)
@@ -289,34 +227,10 @@ std::shared_ptr<VecLWECiphertext_uint32> VecLWEEncryptionScheme_uint32::Encrypt(
 		}
 		b[i] += error[i] + encodem[i];
 	}
-
 	cipher.Setb(b);
-
 	return make_shared<VecLWECiphertext_uint32>(cipher);
-
 };
 
-
-
-//
-//std::shared_ptr<VecLWEPlaintext> VecLWEEncryptionScheme::SetM(
-//	const std::shared_ptr<VecLWEparams> params, const uint32_t m) const {
-//
-//	uint32_t q = params->Getq();
-//	if (m > q)cout << "wrong in SetM m>q!";
-//
-//	VecLWEPlaintext plain;
-//	vector<vector<uint16_t>> M(q);
-//	for (long i = 0; i < q; i++)
-//		M[i].resize(q);
-//
-//	for (long i = 0; i < q; i++)
-//		M[i][(q + i - m) % q] = 1;
-//
-//	plain.SetM(M);
-//	return make_shared<VecLWEPlaintext>(plain);
-//
-//};
 
 void VecLWEEncryptionScheme_uint32::Decrypt(const std::shared_ptr<VecLWEparams_uint32> params,
 	const std::shared_ptr<const VecLWESecretKey_uint32> sk,
@@ -334,21 +248,16 @@ void VecLWEEncryptionScheme_uint32::Decrypt(const std::shared_ptr<VecLWEparams_u
 
 	vector<uint32_t> message(q);
 
-
 	for (long i = 0; i < q; i++)
 	{
-
-
 		for (long k = 0; k < N; k++)
 		{
 			message[i] += (Q-S[i][k]) * a[k];
 		}
 		message[i] += b[i];
 		message[i] = (short int)(round((double)message[i] * (double)t / (double)Q)) % t;
-
 	}
 	result->SetM(message);
-
 };
 
 
@@ -367,20 +276,13 @@ void VecLWEEncryptionScheme_uint32::DecryptNoEncode(const std::shared_ptr<VecLWE
 	vector<uint32_t> b = ct->Getb();
 
 	vector<uint32_t> message(q);
-
-
 	for (long i = 0; i < q; i++)
 	{
-
-
 		for (long k = 0; k < N; k++)
 		{
 			message[i] += (Q-S[i][k]) * a[k];
 		}
 		message[i] += b[i];
-		//	message[i] = (short int)(round((double)message[i] * (double)t / (double)Q)) % t;
-
 	}
 	result->SetM(message);
-
 };
