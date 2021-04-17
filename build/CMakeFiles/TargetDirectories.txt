@@ -1,3 +1,0 @@
-/home/liu/Documents/gitdir/GitMatGSW/build/CMakeFiles/rebuild_cache.dir
-/home/liu/Documents/gitdir/GitMatGSW/build/CMakeFiles/MatGSW.dir
-/home/liu/Documents/gitdir/GitMatGSW/build/CMakeFiles/edit_cache.dir
