@@ -2,7 +2,7 @@
 ====================================================================
 
 
-This implementation is used to test the correctness of the bootstrapping procedure from LWE. See 
+This implementation is used to test the correctness of the bootstrapping procedure from LWE. The scheme is on the paper "Optimizing Bootstrapping and Evaluating Large FHE Gates in the LWE-based GSW-FHE"(https://eprint.iacr.org/2021/490.pdf). 
 
 
 
