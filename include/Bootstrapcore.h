@@ -16,42 +16,6 @@ using namespace std;
 
 enum Boolean { OR,XOR, AND,NAND,NOR,XNOR };
 
-class BootstrapScheme_uint16 {
-public:
-	BootstrapScheme_uint16() {}
-
-	std::shared_ptr<MatGSWCiphertext_uint16> BootKeyGenOne(
-		const std::shared_ptr<MatGSWparams_uint16> params,
-		const std::shared_ptr<MatGSWSecretKey_uint16> secret,
-		const uint16_t m) const;
-
-	std::shared_ptr<VecLWECiphertext_uint16> BootstrappingOne(
-		const std::shared_ptr<MatGSWparams_uint16> Matparams,
-		const std::shared_ptr<VecLWEparams_uint16> Vecparams,
-		const std::shared_ptr<MatGSWCiphertext_uint16> MatCipher,
-		const std::shared_ptr<VecLWECiphertext_uint16> VecCipher) const;
-	
-	std::shared_ptr<VecLWECiphertext_uint16> Initialize(
-		const std::shared_ptr<VecLWEparams_uint16> Vecparams,
-		const uint16_t b
-	)const;
-
-	std::shared_ptr<LWECiphertext_uint16> Bootstrapping(
-		const std::shared_ptr<MatGSWparams_uint16> Matparams,
-		const std::shared_ptr<VecLWEparams_uint16> Vecparams,
-		const std::shared_ptr<LWECiphertext_uint16> InputLWEcipher,
-		const std::shared_ptr<MatGSWSecretKey_uint16> MatSecret,
-		const std::shared_ptr<LWESecretKey_uint16> InputLWESecret
-	)const;
-};
-
-
-uint32_t roundingfunc(uint32_t input, uint32_t q, uint32_t t, uint32_t Q);
-
-uint32_t BooleanGate(uint32_t input, uint32_t q, uint32_t t, uint32_t Q, Boolean BL);
-
-
-//----------------------------uint32
 
 class BootstrapScheme_uint32 {
 public:
